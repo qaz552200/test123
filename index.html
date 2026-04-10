@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>数据管理后台</title>
+<style>
+/* 整体样式 = 模拟你截图的后台风格 */
+body {
+  margin: 0;
+  font-family: "Microsoft YaHei", sans-serif;
+  background: #f5f7fa;
+}
+/* 顶部导航栏 */
+.header {
+  background: #5f9ea0;
+  color: #fff;
+  padding: 12px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.header .title {
+  font-size: 18px;
+  font-weight: 600;
+}
+.header .user {
+  font-size: 14px;
+}
+
+/* 容器 */
+.container {
+  padding: 20px;
+}
+
+/* 概览卡片 */
+.overview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+.overview .card {
+  background: #fff;
+  padding: 16px 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  min-width: 180px;
+}
+.overview .card .label {
+  font-size: 14px;
+  color: #666;
+}
+.overview .card .value {
+  font-size: 20px;
+  font-weight: 600;
+  margin-top: 6px;
+}
+
+/* 搜索与按钮区 */
+.search-bar {
+  background: #fff;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.search-bar input {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  width: 200px;
+}
+.search-bar button {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  background: #00a862;
+  color: #fff;
+  cursor: pointer;
+}
+.search-bar button.orange {
+  background: #ff7d00;
+}
+.search-bar button.blue {
+  background: #00b4ff;
+}
+.search-bar button.teal {
+  background: #00a8a8;
+}
+
+/* 表格 */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+th, td {
+  padding: 12px 10px;
+  text-align: center;
+  border-bottom: 1px solid #eee;
+}
+th {
+  background: #f8f9fa;
+  font-weight: 600;
+  color: #333;
+}
+tr:hover {
+  background: #fafafa;
+}
+/* 操作按钮 */
+td button {
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  color: #fff;
+  cursor: pointer;
+  margin: 0 2px;
+}
+td button.detail {
+  background: #00b4ff;
+}
+td button.refresh {
+  background: #00a862;
+}
+td button.edit {
+  background: #ff7d00;
+}
+td button.del {
+  background: #f53f3f;
+}
+
+/* 分页 */
+.pagination {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.pages {
+  display: flex;
+  gap: 6px;
+}
+.pages button {
+  padding: 6px 12px;
+  border: 1px solid #ddd;
+  background: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.pages button.active {
+  background: #00b4ff;
+  color: #fff;
+  border-color: #00b4ff;
+}
+</style>
+</head>
+
+<body>
+<!-- 顶部导航 -->
+<div class="header">
+  <div class="title">管理后台</div>
+  <div class="user">wang33</div>
+</div>
+
+<div class="container">
+  <!-- 概览数据 -->
+  <div class="overview">
+    <div class="card">
+      <div class="label">昨日总增长</div>
+      <div class="value">8064</div>
+    </div>
+    <div class="card">
+      <div class="label">实时总增长</div>
+      <div class="value">0</div>
+    </div>
+    <div class="card">
+      <div class="label">日均总增长</div>
+      <div class="value">6479</div>
+    </div>
+    <div class="card">
+      <div class="label">喜欢总增长</div>
+      <div class="value">142675</div>
+    </div>
+    <div class="card">
+      <div class="label">日均均值</div>
+      <div class="value">36</div>
+    </div>
+    <div class="card">
+      <div class="label">昨日均值</div>
+      <div class="value">45</div>
+    </div>
+    <div class="card">
+      <div class="label">实时均值</div>
+      <div class="value">0</div>
+    </div>
+    <div class="card">
+      <button class="teal">历史记录</button>
+    </div>
+  </div>
+
+  <!-- 搜索与按钮 -->
+  <div class="search-bar">
+    <select>
+      <option>设备编号</option>
+    </select>
+    <input type="text" placeholder="输入搜索内容">
+    <button>搜索</button>
+    <button class="blue">新增</button>
+    <button class="orange">批量刷新</button>
+    <button class="orange">批量删除</button>
+    <button>Excel模板</button>
+    <button>导入Excel</button>
+    <button>导出Excel</button>
+    <button>全部刷新</button>
+  </div>
+
+  <!-- 数据表格 -->
+  <table>
+    <thead>
+      <tr>
+        <th><input type="checkbox"></th>
+        <th>设备</th>
+        <th>昵称</th>
+        <th>抖音号</th>
+        <th>原始数据</th>
+        <th>运行天数</th>
+        <th>获赞数</th>
+        <th>作品数</th>
+        <th>粉丝数</th>
+        <th>收藏数</th>
+        <th>喜欢数</th>
+        <th>备注</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody id="tableBody">
+      <!-- 数据行 -->
+    </tbody>
+  </table>
+
+  <!-- 分页 -->
+  <div class="pagination">
+    <div>共 181 条，10 条/页</div>
+    <div class="pages">
+      <button class="active">1</button>
+      <button>2</button>
+      <button>3</button>
+      <button>...</button>
+      <button>19</button>
+      <button>确定</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// 模拟表格数据
+const data = [
+  {id:1,device:"077",nickname:"用户5219",douyin:"93602094",days:0,zuan:2,realTime:0,yesterday:0,likes:0,fans:0,collect:0,love:0,note:"王台aa12"},
+  {id:2,device:"076",nickname:"伊艳伊伊",douyin:"37938692",days:0,zuan:0,realTime:0,yesterday:0,likes:0,fans:0,collect:0,love:1,note:"王台aa12"},
+  {id:3,device:"075",nickname:"用户8659",douyin:"27380077",days:0,zuan:0,realTime:0,yesterday:0,likes:0,fans:0,collect:0,love:0,note:"王台aa12"},
+  {id:4,device:"074",nickname:"用户4740",douyin:"20353233",days:3,zuan:0,realTime:0,yesterday:0,likes:0,fans:0,collect:0,love:2,note:"王台aa12"},
+  {id:5,device:"073",nickname:"用户5409",douyin:"56248833",days:0,zuan:0,realTime:0,yesterday:0,likes:0,fans:0,collect:0,love:1,note:"王台aa12"},
+  {id:6,device:"072",nickname:"用户6508",douyin:"20791408",days:0,zuan:0,realTime:0,yesterday:0,likes:0,fans:0,collect:0,love:0,note:"王台aa12"},
+  {id:7,device:"071",nickname:"用户349",douyin:"6527943",days:0,zuan:0,realTime:0,yesterday:0,likes:0,fans:0,collect:0,love:1,note:"王台aa12"},
+  {id:8,device:"070",nickname:"用户5502",douyin:"22010960",days:0,zuan:0,realTime:0,yesterday:0,likes:0,fans:0,collect:0,love:0,note:"王台aa12"},
+  {id:9,device:"069",nickname:"用户6851",douyin:"85850555",days:0,zuan:0,realTime:0,yesterday:0,likes:0,fans:0,collect:0,love:0,note:"王台aa12"},
+  {id:10,device:"068",nickname:"用户1977",douyin:"24191519",days:0,zuan:0,realTime:0,yesterday:0,likes:0,fans:0,collect:0,love:0,note:"王台aa12"}
+];
+
+// 渲染表格
+const tableBody = document.getElementById("tableBody");
+data.forEach(item => {
+  const tr = document.createElement("tr");
+  tr.innerHTML = `
+    <td><input type="checkbox"></td>
+    <td>${item.id}</td>
+    <td>${item.device}</td>
+    <td>${item.nickname}</td>
+    <td>${item.douyin}</td>
+    <td>${item.days}</td>
+    <td>${item.zuan}</td>
+    <td>${item.realTime}</td>
+    <td>${item.yesterday}</td>
+    <td>${item.likes}</td>
+    <td>${item.fans}</td>
+    <td>${item.collect}</td>
+    <td>${item.love}</td>
+    <td>${item.note}</td>
+    <td>
+      <button class="detail">详情</button>
+      <button class="refresh">刷新</button>
+      <button class="edit">修改</button>
+      <button class="del">删除</button>
+    </td>
+  `;
+  tableBody.appendChild(tr);
+});
+</script>
+</body>
+</html>
