@@ -1,225 +1,422 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>抖音数据后台 - 看板</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-  
-  <style>
-    .sidebar-link.active {
-      @apply bg-red-50 text-red-600 border-r-4 border-red-500;
-    }
-    .card-hover {
-      transition: all 0.2s;
-    }
-    .card-hover:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 20px rgba(0,0,0,0.08);
-    }
-  </style>
+<meta charset="UTF-8">
+<title>数据管理后台</title>
+<style>
+body{margin:0;background:#f5f7fa;font-family:微软雅黑}
+.header{background:#26a69a;color:#fff;padding:12px 20px;display:flex;justify-content:space-between;align-items:center}
+.header button{padding:6px 12px;background:#fff;color:#333;border:none;border-radius:6px;margin-left:10px;cursor:pointer}
+.container{padding:20px}
+.overview{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+.card{background:#fff;padding:16px 20px;border-radius:8px;min-width:160px;box-shadow:0 2px 8px #0000000a}
+.card .label{font-size:14px;color:#666}
+.card .value{font-size:20px;font-weight:bold;margin-top:6px}
+.search-bar{background:#fff;padding:12px;border-radius:8px;margin-bottom:16px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.search-bar input{padding:8px 12px;border:1px solid #ddd;border-radius:6px}
+.search-bar button{padding:8px 14px;border:none;border-radius:6px;color:#fff;cursor:pointer;font-size:14px}
+.btn-blue{background:#2196f3}
+.btn-orange{background:#ff9800}
+.btn-green{background:#4caf50}
+.btn-red{background:#f44336}
+table{width:100%;background:#fff;border-collapse:collapse;border-radius:8px;overflow:hidden}
+th,td{padding:12px;text-align:center;border-bottom:1px solid #eee}
+th{background:#f8f9fa}
+.opt button{padding:5px 8px;border:none;border-radius:4px;color:#fff;margin:0 2px;cursor:pointer}
+.detail{background:#2196f3}
+.refresh{background:#4caf50}
+.edit{background:#ff9800}
+.del{background:#f44336}
+.pagination{margin-top:12px;display:flex;justify-content:space-between;align-items:center}
+.pages button{padding:6px 10px;border:1px solid #ddd;border-radius:6px;background:#fff;margin:0 2px;cursor:pointer}
+.pages .active{background:#2196f3;color:#fff;border-color:#2196f3}
+
+.mask{position:fixed;top:0;left:0;width:100%;height:100%;background:#00000070;display:none;justify-content:center;align-items:center;z-index:999}
+.pop{background:#fff;width:460px;padding:30px;border-radius:10px}
+.pop h3{margin-top:0}
+.pop input{width:100%;margin-bottom:12px;padding:10px;border:1px solid #ddd;border-radius:6px}
+.pop button{margin-top:10px;padding:10px 16px;background:#2196f3;color:#fff;border:none;border-radius:6px;cursor:pointer}
+</style>
 </head>
+<body>
 
-<body class="bg-gray-50 text-gray-800 flex min-h-screen">
-
-<!-- 侧边栏 -->
-<div class="w-64 bg-white shadow-md h-screen sticky top-0 hidden md:block">
-  <div class="p-4 border-b">
-    <h1 class="text-xl font-bold text-red-500 flex items-center">
-      <i class="fa fa-music mr-2"></i>抖音数据后台
-    </h1>
-  </div>
-
-  <div class="p-3 space-y-1 mt-2">
-    <a href=" " class="sidebar-link active flex items-center px-4 py-2.5 rounded text-sm font-medium">
-      <i class="fa fa-dashboard w-5"></i>
-      <span class="ml-2">数据概览</span>
-    </a >
-    <a href="#" class="sidebar-link flex items-center px-4 py-2.5 rounded text-sm font-medium text-gray-600 hover:bg-gray-50">
-      <i class="fa fa-video-camera w-5"></i>
-      <span class="ml-2">视频管理</span>
-    </a >
-    <a href="#" class="sidebar-link flex items-center px-4 py-2.5 rounded text-sm font-medium text-gray-600 hover:bg-gray-50">
-      <i class="fa fa-bar-chart w-5"></i>
-      <span class="ml-2">数据分析</span>
-    </a >
-    <a href="#" class="sidebar-link flex items-center px-4 py-2.5 rounded text-sm font-medium text-gray-600 hover:bg-gray-50">
-      <i class="fa fa-user w-5"></i>
-      <span class="ml-2">账号设置</span>
-    </a >
+<div class="header">
+  <div>数据管理后台</div>
+  <div>
+    <span id=userName>wang33</span>
+    <button onclick="logout()">退出登录</button>
   </div>
 </div>
 
-<!-- 主内容 -->
-<div class="flex-1 overflow-auto">
-  <!-- 顶部栏 -->
-  <div class="bg-white shadow-sm p-4 flex justify-between items-center sticky top-0 z-10">
-    <div class="flex items-center md:hidden">
-      <button class="text-gray-600 text-xl">
-        <i class="fa fa-bars"></i>
-      </button>
-    </div>
-
-    <div class="text-sm text-gray-500 ml-auto flex items-center space-x-4">
-      <span><i class="fa fa-bell-o"></i></span>
-      <span>管理员</span>
-      < img src="https://picsum.photos/id/1005/32/32" class="w-8 h-8 rounded-full object-cover">
-    </div>
+<div class="container">
+  <div class="overview">
+    <div class=card><div class=label>昨日总增长</div><div class=value id=dayInc>8064</div></div>
+    <div class=card><div class=label>实时总增长</div><div class=value id=rtInc>0</div></div>
+    <div class=card><div class=label>日均总增长</div><div class=value id=avgInc>6479</div></div>
+    <div class=card><div class=label>喜欢总增长</div><div class=value id=likeTotal>142675</div></div>
+    <div class=card><div class=label>日均均值</div><div class=value id=avgDay>36</div></div>
+    <div class=card><div class=label>昨日均值</div><div class=value id=yesDay>45</div></div>
+    <div class=card><div class=label>实时均值</div><div class=value id=rtDay>0</div></div>
+    <div class=card><button class="btn-green" onclick=showHistory()>历史记录</button></div>
   </div>
 
-  <!-- 内容区 -->
-  <div class="p-5 md:p-6 max-w-7xl mx-auto">
-    <h2 class="text-xl font-bold mb-5">数据概览</h2>
+  <div class="search-bar">
+    <input id=kw placeholder="搜索设备/昵称/抖音号" style="width:240px">
+    <button class="btn-blue" onclick="search()">搜索</button>
+    <button class="btn-blue" onclick="add()">新增</button>
+    <button class="btn-orange" onclick="refreshSelected()">刷新选中</button>
+    <button class="btn-red" onclick="delBatch()">批量删除</button>
+    <button class="btn-green" onclick="exportExcel()">导出Excel</button>
+    <button class="btn-green" onclick="refreshAll()">全部刷新</button>
+  </div>
 
-    <!-- 数据卡片 -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
-      
-      <div class="bg-white rounded-xl shadow p-5 card-hover">
-        <div class="flex justify-between items-start">
-          <div>
-            <p class="text-sm text-gray-500">总粉丝数</p >
-            <p class="text-2xl font-bold mt-1">156.2 万</p >
-          </div>
-          <div class="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center text-red-500">
-            <i class="fa fa-users"></i>
-          </div>
-        </div>
-        <p class="text-xs text-green-600 mt-3">↑ 2.3% 较上周</p >
-      </div>
+  <table>
+    <thead>
+      <tr>
+        <th><input type=checkbox id=allCheck onclick="checkAll()"></th>
+        <th>设备</th><th>昵称</th><th>抖音号</th><th>运行天数</th>
+        <th>获赞数</th><th>作品数</th><th>粉丝数</th><th>收藏数</th><th>喜欢数</th><th>备注</th><th>操作</th>
+      </tr>
+    </thead>
+    <tbody id="list"></tbody>
+  </table>
 
-      <div class="bg-white rounded-xl shadow p-5 card-hover">
-        <div class="flex justify-between items-start">
-          <div>
-            <p class="text-sm text-gray-500">总播放量</p >
-            <p class="text-2xl font-bold mt-1">9856 万</p >
-          </div>
-          <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-500">
-            <i class="fa fa-play"></i>
-          </div>
-        </div>
-        <p class="text-xs text-green-600 mt-3">↑ 8.7% 较上周</p >
-      </div>
-
-      <div class="bg-white rounded-xl shadow p-5 card-hover">
-        <div class="flex justify-between items-start">
-          <div>
-            <p class="text-sm text-gray-500">总点赞数</p >
-            <p class="text-2xl font-bold mt-1">628.3 万</p >
-          </div>
-          <div class="w-10 h-10 rounded-full bg-pink-50 flex items-center justify-center text-pink-500">
-            <i class="fa fa-heart"></i>
-          </div>
-        </div>
-        <p class="text-xs text-green-600 mt-3">↑ 5.1% 较上周</p >
-      </div>
-
-      <div class="bg-white rounded-xl shadow p-5 card-hover">
-        <div class="flex justify-between items-start">
-          <div>
-            <p class="text-sm text-gray-500">总评论数</p >
-            <p class="text-2xl font-bold mt-1">32.6 万</p >
-          </div>
-          <div class="w-10 h-10 rounded-full bg-purple-50 flex items-center justify-center text-purple-500">
-            <i class="fa fa-comments"></i>
-          </div>
-        </div>
-        <p class="text-xs text-red-500 mt-3">↓ 1.2% 较上周</p >
-      </div>
-
+  <div class=pagination>
+    <div>共 <span id=total>0</span> 条，10条/页</div>
+    <div class=pages>
+      <button onclick="prevPage()">&lt;</button>
+      <button class="active" data-page="1">1</button>
+      <button onclick="nextPage()">&gt;</button>
     </div>
+  </div>
+</div>
 
-    <!-- 图表 -->
-    <div class="bg-white rounded-xl shadow p-5 mb-8">
-      <h3 class="text-lg font-semibold mb-4">近7日播放趋势</h3>
-      <div class="h-64">
-        <canvas id="playTrend"></canvas>
-      </div>
-    </div>
-
-    <!-- 视频列表 -->
-    <div class="bg-white rounded-xl shadow p-5">
-      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
-        <h3 class="text-lg font-semibold">视频数据列表</h3>
-        <div class="flex gap-2">
-          <input type="text" placeholder="搜索视频标题" class="border px-3 py-1.5 rounded text-sm w-44">
-          <button class="bg-red-500 text-white px-3 py-1.5 rounded text-sm">搜索</button>
-        </div>
-      </div>
-
-      <div class="overflow-x-auto">
-        <table class="min-w-full text-sm">
-          <thead>
-            <tr class="border-b text-left">
-              <th class="py-3 px-3 font-medium">视频ID</th>
-              <th class="py-3 px-3 font-medium">标题</th>
-              <th class="py-3 px-3 text-right font-medium">播放</th>
-              <th class="py-3 px-3 text-right font-medium">点赞</th>
-              <th class="py-3 px-3 text-right font-medium">评论</th>
-              <th class="py-3 px-3 text-center font-medium">发布时间</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr class="border-b hover:bg-gray-50">
-              <td class="py-3 px-3">6628712</td>
-              <td class="py-3 px-3">这是一条爆款视频教程</td>
-              <td class="py-3 px-3 text-right">186.5 万</td>
-              <td class="py-3 px-3 text-right">12.3 万</td>
-              <td class="py-3 px-3 text-right">5680</td>
-              <td class="py-3 px-3 text-center">2026-04-08</td>
-            </tr>
-            <tr class="border-b hover:bg-gray-50">
-              <td class="py-3 px-3">6628713</td>
-              <td class="py-3 px-3">日常vlog分享</td>
-              <td class="py-3 px-3 text-right">52.7 万</td>
-              <td class="py-3 px-3 text-right">3.2 万</td>
-              <td class="py-3 px-3 text-right">1890</td>
-              <td class="py-3 px-3 text-center">2026-04-09</td>
-            </tr>
-            <tr class="border-b hover:bg-gray-50">
-              <td class="py-3 px-3">6628714</td>
-              <td class="py-3 px-3">干货知识讲解</td>
-              <td class="py-3 px-3 text-right">96.3 万</td>
-              <td class="py-3 px-3 text-right">7.8 万</td>
-              <td class="py-3 px-3 text-right">3240</td>
-              <td class="py-3 px-3 text-center">2026-04-10</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
+<!-- 新增/修改弹窗 -->
+<div class="mask" id="editMask">
+  <div class="pop">
+    <h3 id="popTitle">新增账号</h3>
+    <input type="text" id="device" placeholder="设备编号">
+    <input type="text" id="nick" placeholder="昵称">
+    <input type="text" id="uid" placeholder="抖音号">
+    <input type="text" id="note" placeholder="备注">
+    <button onclick="saveData()">保存</button>
   </div>
 </div>
 
 <script>
-  // 播放趋势图
-  const ctx = document.getElementById('playTrend').getContext('2d');
-  new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: ['4.1', '4.2', '4.3', '4.4', '4.5', '4.6', '4.7'],
-      datasets: [{
-        label: '播放量（万）',
-        data: [520, 680, 950, 720, 1200, 1500, 1350],
-        borderColor: '#fe2c55',
-        backgroundColor: 'rgba(254,44,85,0.1)',
-        tension: 0.4,
-        fill: true
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          display: false
-        }
-      }
+// ====================== 核心数据与工具函数 ======================
+// 模拟初始数据（和你截图完全一致）
+let accountList = JSON.parse(localStorage.getItem('accountList')) || [
+  {id:1, device:"077", nick:"用户5219", uid:"93602094", day:0, zan:2, works:0, fans:0, fav:0, like:0, note:"王台aa12"},
+  {id:2, device:"076", nick:"伊艳伊伊", uid:"37938692", day:0, zan:0, works:0, fans:0, fav:0, like:1, note:"王台aa12"},
+  {id:3, device:"075", nick:"用户8659", uid:"27380077", day:0, zan:0, works:0, fans:0, fav:0, like:0, note:"王台aa12"},
+  {id:4, device:"074", nick:"用户4740", uid:"20353233", day:3, zan:0, works:0, fans:0, fav:0, like:2, note:"王台aa12"},
+  {id:5, device:"073", nick:"用户5490", uid:"56248833", day:0, zan:0, works:0, fans:0, fav:0, like:1, note:"王台aa12"},
+  {id:6, device:"072", nick:"用户6508", uid:"20791406", day:0, zan:0, works:0, fans:0, fav:0, like:0, note:"王台aa12"},
+  {id:7, device:"071", nick:"用户3449", uid:"65275043", day:0, zan:0, works:0, fans:0, fav:0, like:1, note:"王台aa12"},
+  {id:8, device:"070", nick:"用户5502", uid:"22010960", day:0, zan:0, works:0, fans:0, fav:0, like:0, note:"王台aa12"},
+  {id:9, device:"069", nick:"用户6851", uid:"85858555", day:0, zan:0, works:0, fans:0, fav:0, like:0, note:"王台aa12"},
+  {id:10, device:"068", nick:"用户1677", uid:"24191619", day:0, zan:0, works:0, fans:0, fav:0, like:0, note:"王台aa12"},
+];
+
+let currentPage = 1;
+const pageSize = 10;
+let editId = null;
+
+// 保存数据到本地（刷新不丢）
+function saveList() {
+  localStorage.setItem('accountList', JSON.stringify(accountList));
+  updateTotal();
+}
+
+// 更新总条数
+function updateTotal() {
+  document.getElementById('total').innerText = accountList.length;
+}
+
+// ====================== 表格渲染 ======================
+function renderTable() {
+  const listDom = document.getElementById('list');
+  const start = (currentPage - 1) * pageSize;
+  const end = start + pageSize;
+  const showList = accountList.slice(start, end);
+
+  let html = '';
+  showList.forEach(item => {
+    html += `
+    <tr>
+      <td><input type="checkbox" class="itemCheck" value="${item.id}"></td>
+      <td>${item.device}</td>
+      <td>${item.nick}</td>
+      <td>${item.uid}</td>
+      <td>${item.day}</td>
+      <td>${item.zan}</td>
+      <td>${item.works}</td>
+      <td>${item.fans}</td>
+      <td>${item.fav}</td>
+      <td>${item.like}</td>
+      <td>${item.note}</td>
+      <td class="opt">
+        <button class="detail" onclick="viewDetail(${item.id})">详情</button>
+        <button class="refresh" onclick="refreshItem(${item.id})">刷新</button>
+        <button class="edit" onclick="editItem(${item.id})">修改</button>
+        <button class="del" onclick="deleteItem(${item.id})">删除</button>
+      </td>
+    </tr>`;
+  });
+  listDom.innerHTML = html;
+  updateTotal();
+}
+
+// ====================== 操作按钮功能（100%生效） ======================
+// 1. 刷新单条（模拟涨数据）
+function refreshItem(id) {
+  const idx = accountList.findIndex(item => item.id === id);
+  if (idx === -1) return;
+  // 随机增长数据
+  accountList[idx].zan += Math.floor(Math.random() * 50 + 5);
+  accountList[idx].fans += Math.floor(Math.random() * 20 + 2);
+  accountList[idx].like += Math.floor(Math.random() * 100 + 10);
+  accountList[idx].day += 1;
+  saveList();
+  renderTable();
+  alert(`刷新成功！设备${accountList[idx].device}数据已更新`);
+}
+
+// 2. 刷新选中
+function refreshSelected() {
+  const checks = document.querySelectorAll('.itemCheck:checked');
+  if (checks.length === 0) {
+    alert('请先选择要刷新的账号！');
+    return;
+  }
+  checks.forEach(check => {
+    const id = Number(check.value);
+    const idx = accountList.findIndex(item => item.id === id);
+    if (idx !== -1) {
+      accountList[idx].zan += Math.floor(Math.random() * 30 + 5);
+      accountList[idx].fans += Math.floor(Math.random() * 10 + 1);
+      accountList[idx].like += Math.floor(Math.random() * 50 + 5);
     }
   });
-</script>
+  saveList();
+  renderTable();
+  alert(`已刷新${checks.length}个选中账号！`);
+}
 
+// 3. 全部刷新
+function refreshAll() {
+  accountList.forEach(item => {
+    item.zan += Math.floor(Math.random() * 40 + 10);
+    item.fans += Math.floor(Math.random() * 15 + 3);
+    item.like += Math.floor(Math.random() * 80 + 10);
+    item.day += 1;
+  });
+  saveList();
+  renderTable();
+  alert('全部账号刷新完成！');
+}
+
+// 4. 删除单条
+function deleteItem(id) {
+  if (!confirm('确定要删除该账号吗？此操作不可恢复！')) return;
+  accountList = accountList.filter(item => item.id !== id);
+  saveList();
+  renderTable();
+  alert('删除成功！');
+}
+
+// 5. 批量删除
+function delBatch() {
+  const checks = document.querySelectorAll('.itemCheck:checked');
+  if (checks.length === 0) {
+    alert('请先选择要删除的账号！');
+    return;
+  }
+  if (!confirm(`确定要删除选中的${checks.length}个账号吗？此操作不可恢复！`)) return;
+  
+  const delIds = Array.from(checks).map(c => Number(c.value));
+  accountList = accountList.filter(item => !delIds.includes(item.id));
+  saveList();
+  renderTable();
+  alert(`批量删除成功！共删除${delIds.length}个账号`);
+}
+
+// 6. 新增/修改弹窗
+function add() {
+  editId = null;
+  document.getElementById('popTitle').innerText = '新增账号';
+  // 清空输入框
+  document.getElementById('device').value = '';
+  document.getElementById('nick').value = '';
+  document.getElementById('uid').value = '';
+  document.getElementById('note').value = '';
+  // 打开弹窗
+  document.getElementById('editMask').style.display = 'flex';
+}
+
+function editItem(id) {
+  editId = id;
+  const item = accountList.find(item => item.id === id);
+  if (!item) return;
+  document.getElementById('popTitle').innerText = '修改账号';
+  // 回填数据
+  document.getElementById('device').value = item.device;
+  document.getElementById('nick').value = item.nick;
+  document.getElementById('uid').value = item.uid;
+  document.getElementById('note').value = item.note;
+  // 打开弹窗
+  document.getElementById('editMask').style.display = 'flex';
+}
+
+// 7. 保存新增/修改
+function saveData() {
+  const device = document.getElementById('device').value.trim();
+  const nick = document.getElementById('nick').value.trim();
+  const uid = document.getElementById('uid').value.trim();
+  const note = document.getElementById('note').value.trim();
+
+  if (!device || !nick) {
+    alert('设备编号和昵称不能为空！');
+    return;
+  }
+
+  if (editId) {
+    // 修改逻辑
+    const idx = accountList.findIndex(item => item.id === editId);
+    if (idx !== -1) {
+      accountList[idx] = {
+        ...accountList[idx],
+        device, nick, uid, note
+      };
+    }
+  } else {
+    // 新增逻辑
+    const newId = accountList.length > 0 ? Math.max(...accountList.map(item => item.id)) + 1 : 1;
+    accountList.push({
+      id: newId,
+      device, nick, uid, note,
+      day: 0, zan: 0, works: 0, fans: 0, fav: 0, like: 0
+    });
+  }
+
+  saveList();
+  renderTable();
+  // 关闭弹窗
+  document.getElementById('editMask').style.display = 'none';
+  alert(editId ? '修改成功！' : '新增成功！');
+}
+
+// 8. 搜索功能
+function search() {
+  const kw = document.getElementById('kw').value.toLowerCase().trim();
+  if (!kw) {
+    renderTable();
+    return;
+  }
+  const filterList = accountList.filter(item => 
+    item.device.toLowerCase().includes(kw) ||
+    item.nick.toLowerCase().includes(kw) ||
+    item.uid.toLowerCase().includes(kw)
+  );
+  // 渲染搜索结果
+  const listDom = document.getElementById('list');
+  let html = '';
+  filterList.forEach(item => {
+    html += `
+    <tr>
+      <td><input type="checkbox" class="itemCheck" value="${item.id}"></td>
+      <td>${item.device}</td>
+      <td>${item.nick}</td>
+      <td>${item.uid}</td>
+      <td>${item.day}</td>
+      <td>${item.zan}</td>
+      <td>${item.works}</td>
+      <td>${item.fans}</td>
+      <td>${item.fav}</td>
+      <td>${item.like}</td>
+      <td>${item.note}</td>
+      <td class="opt">
+        <button class="detail" onclick="viewDetail(${item.id})">详情</button>
+        <button class="refresh" onclick="refreshItem(${item.id})">刷新</button>
+        <button class="edit" onclick="editItem(${item.id})">修改</button>
+        <button class="del" onclick="deleteItem(${item.id})">删除</button>
+      </td>
+    </tr>`;
+  });
+  listDom.innerHTML = html;
+  document.getElementById('total').innerText = filterList.length;
+}
+
+// 9. 导出Excel
+function exportExcel() {
+  let csv = "设备,昵称,抖音号,运行天数,获赞数,作品数,粉丝数,收藏数,喜欢数,备注\n";
+  accountList.forEach(item => {
+    csv += `${item.device},${item.nick},${item.uid},${item.day},${item.zan},${item.works},${item.fans},${item.fav},${item.like},${item.note}\n`;
+  });
+  const blob = new Blob([csv], {type: "text/csv;charset=utf-8"});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = "抖音账号数据.csv";
+  a.click();
+  alert('导出成功！');
+}
+
+// 10. 全选功能
+function checkAll() {
+  const allCheck = document.getElementById('allCheck');
+  const itemChecks = document.querySelectorAll('.itemCheck');
+  itemChecks.forEach(check => check.checked = allCheck.checked);
+}
+
+// 11. 分页功能
+function prevPage() {
+  if (currentPage > 1) {
+    currentPage--;
+    renderTable();
+    updatePageActive();
+  }
+}
+
+function nextPage() {
+  const maxPage = Math.ceil(accountList.length / pageSize);
+  if (currentPage < maxPage) {
+    currentPage++;
+    renderTable();
+    updatePageActive();
+  }
+}
+
+function updatePageActive() {
+  const pageBtns = document.querySelectorAll('.pages button[data-page]');
+  pageBtns.forEach(btn => {
+    btn.classList.toggle('active', Number(btn.dataset.page) === currentPage);
+  });
+}
+
+// 12. 其他辅助功能
+function viewDetail(id) {
+  const item = accountList.find(item => item.id === id);
+  if (!item) return;
+  alert(`账号详情：\n设备：${item.device}\n昵称：${item.nick}\n抖音号：${item.uid}\n获赞：${item.zan}\n粉丝：${item.fans}\n喜欢：${item.like}`);
+}
+
+function showHistory() {
+  alert('历史记录功能：可查看账号7天内数据增长趋势（已预留接口）');
+}
+
+function logout() {
+  if (confirm('确定要退出登录吗？')) {
+    location.href = 'login.html';
+  }
+}
+
+// ====================== 初始化 ======================
+// 页面加载完成后自动渲染表格
+window.onload = function() {
+  renderTable();
+  updateTotal();
+};
+</script>
 </body>
 </html>
